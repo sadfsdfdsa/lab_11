@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -9,7 +9,7 @@ namespace lab_10
         void Print();
     }
 
-    public class Production : IComparable, IPrint
+    public class Production : IComparable, IPrint, ICloneable
     {
         private int _workersNumber;
 
@@ -42,10 +42,24 @@ namespace lab_10
         {
             ShowInfo();
         }
+
+        public object Clone()
+        {
+            return new Production {WorkersNumber = WorkersNumber};
+        }
     }
 
-    public class Factory : Production, IPrint
+    public class Factory : Production, IPrint, ICloneable
     {
+        public Production BaseProduction
+
+        {
+            get
+            {
+                return new Production() {WorkersNumber = WorkersNumber}; //возвращает объект базового класса
+            }
+        }
+
         private string _factoryName;
 
         public string FactoryName
@@ -70,11 +84,24 @@ namespace lab_10
             Console.Write("IPrint, factory:");
             ShowInfo();
         }
+
+        public new object Clone()
+        {
+            return new Factory {FactoryName = FactoryName, WorkersNumber = WorkersNumber};
+        }
     }
 
-    public class Shop : Factory
+    public class Shop : Production, ICloneable
     {
-        private int _mainWorkerNumber;
+        public Production BaseProduction
+
+        {
+            get
+            {
+                return new Production() {WorkersNumber = WorkersNumber}; //возвращает объект базового класса
+            }
+        }
+
         private string _shopName;
 
         public string ShopName
@@ -83,20 +110,35 @@ namespace lab_10
             set => _shopName = value;
         }
 
-        public int MainWorkerNumber
-        {
-            get => _mainWorkerNumber;
-            set => _mainWorkerNumber = value;
-        }
+        public int MainWorkerNumber { get; set; }
 
         public override void ShowInfo()
         {
-            Console.WriteLine($"Engineer number: {MainWorkerNumber}, Workers: {WorkersNumber}");
+            Console.WriteLine($"Engineer number: {MainWorkerNumber}, Workers: {WorkersNumber}, ShopName: {ShopName}");
+        }
+
+        public new object Clone()
+        {
+            return new Shop {ShopName = ShopName, WorkersNumber = WorkersNumber, MainWorkerNumber = MainWorkerNumber};
+        }
+
+        public override string ToString()
+        {
+            return _shopName;
         }
     }
 
     public class Workshop : Production, ICloneable, IPrint
     {
+        public Production BaseProduction
+
+        {
+            get
+            {
+                return new Production() {WorkersNumber = WorkersNumber}; //возвращает объект базового класса
+            }
+        }
+
         private int _managersNumber;
 
         public int ManagersNumber
@@ -110,7 +152,7 @@ namespace lab_10
             Console.WriteLine($"Managers: {ManagersNumber}, Workers: {WorkersNumber}");
         }
 
-        public object Clone()
+        public new object Clone()
         {
             return new Workshop {ManagersNumber = ManagersNumber, WorkersNumber = WorkersNumber};
         }
@@ -123,32 +165,6 @@ namespace lab_10
     }
 
 
-    // abstract
-    public abstract class PlantAbstract
-    {
-        private Shop[] _shops;
-        public abstract void Show();
-    }
-
-    public class Plant : PlantAbstract
-    {
-        private Shop[] _shops;
-
-        public Shop[] Shops
-        {
-            get => _shops;
-            set => _shops = value;
-        }
-
-        public override void Show()
-        {
-            foreach (Shop shop in _shops)
-            {
-                shop.ShowInfo();
-            }
-        }
-    }
-
     // sorting
     public class SortByWorkersNumber : IComparer
     {
@@ -156,12 +172,12 @@ namespace lab_10
         {
             Production s1 = (Production) ob1;
             Production s2 = (Production) ob2;
-            if (s1.WorkersNumber == s2.WorkersNumber)
+            if (s2 != null && s1 != null && s1.WorkersNumber == s2.WorkersNumber)
             {
                 return 0;
             }
 
-            return s1.WorkersNumber > s2.WorkersNumber ? 1 : -1;
+            return s2 != null && s1 != null && s1.WorkersNumber > s2.WorkersNumber ? 1 : -1;
         }
     }
 }
