@@ -436,7 +436,7 @@ namespace lab_11
                         Console.WriteLine("RunTime " + ts);
 
                         // second
-                        Console.WriteLine("\nКоллекция типа Stack<Shop>");
+                        Console.WriteLine("\nКоллекция типа Stack<TKey>");
                         stopWatch = new Stopwatch();
 
                         stopWatch.Start();
