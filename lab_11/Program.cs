@@ -92,8 +92,16 @@ namespace lab_11
                         Console.WriteLine("Элемент добавлен в начало.");
                         break;
                     case 2:
-                        arr.Pop();
-                        Console.WriteLine("Элемент удален из стека.");
+                        if (arr.Count > 0)
+                        {
+                            arr.Pop();
+                            Console.WriteLine("Элемент удален из стека.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Стек уже пустой, удаление невозможно.");
+                        }
+
                         break;
                     case 3:
                         objNumber = InputIntInterval(1, 3,
